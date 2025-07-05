@@ -128,6 +128,28 @@ input:checked + .slider:before {
 
    <!-- loading the modules-->
    <script>
+     let currentUserInitials = "";
+     window.onload = function() {
+              const saved = localStorage.getItem("birdlogInitials");
+              if (saved) {
+                currentUserInitials = saved;
+                document.getElementById("welcomeModal").style.display = "none";
+              }
+              document.querySelector(".close-button").onclick = () => {
+                document.getElementById("welcomeModal").style.display = "none";
+              };
+
+              document.getElementById("submitInitials").onclick = () => {
+                const input = document.getElementById("usersInitialsInput").value.trim();
+                if (input) {
+                  currentUserInitials = input;
+                  localStorage.setItem("birdlogInitials", input);
+                  document.getElementById("welcomeModal").style.display = "none";
+                } else {
+                  alert("Please enter your name or initials.")
+                }
+              }
+            }
         require([ "esri/config","esri/Map",
          "esri/views/MapView", 
          "esri/widgets/Locate",
@@ -232,7 +254,6 @@ input:checked + .slider:before {
                 view: view,
                 content: document.getElementById("layerToggleContent"),
                 expandTooltip: "Toggle Layers",
-                //expanded: False,
                 icon: "layers"
             });
 
@@ -246,6 +267,21 @@ input:checked + .slider:before {
             document.getElementById("ibaToggle").addEventListener("change", function(e) {
                 birdLayer.visible = e.target.checked;
             });
+
+            document.getElementById("userOnlyToggle"). addEventListener("change", function(e) {
+              if (e.target.checked && currentUserInitials) {
+                layer.definitionExpression = `whats_your_name_or_initials = "${currentUserInitials}"`;
+              } else {
+                layer.definitionExpression = "";
+              }
+            });
+
+            view.when(()=>{
+              locateBtn.locate().catch((err) =>{
+                console.warn("Couldn't Locate user", err);
+              });
+            });
+
         });
     </script>
 
@@ -280,26 +316,12 @@ input:checked + .slider:before {
             <span class="close-button">&times;</span>
             <h2>Welcome to Bird Log!</h2>
             <p>Track your bird sightings and explore what others have seen in your area.</p>
+            <p>Enter your name or initials to personalize your sightings;</p>
+            <input type="text" id="usersInitialsInput" placeholder="Your initials or Name" style="width: 80%;">
+            <br><br>
+            <button id="submitInitials" style="padding: 8px 16px;">Continue</button>
         </div>
-    </div>
-    <script>
-        window.onload = function () {
-          const modal = document.getElementById("welcomeModal");
-          const closeBtn = document.querySelector(".close-button");
-    
-          closeBtn.onclick = function () {
-            modal.style.display = "none";
-          }
-    
-          window.onclick = function (event) {
-            if (event.target == modal) {
-              modal.style.display = "none";
-            }
-          }
-        }
-    </script>
-  
- 
+    </div> 
   </body>
 </html>
 
