@@ -179,26 +179,30 @@ input:checked + .slider:before {
 
       let currentUserInitials = "";
       window.onload = function() {
-               const saved = localStorage.getItem("birdlogInitials");
-               if (saved) {
-                 currentUserInitials = saved;
-                 document.getElementById("welcomeModal").style.display = "none";
-               }
-               document.querySelector(".close-button").onclick = () => {
-                 document.getElementById("welcomeModal").style.display = "none";
-               };
- 
-               document.getElementById("submitInitials").onclick = () => {
-                 const input = document.getElementById("usersInitialsInput").value.trim();
-                 if (input) {
-                   currentUserInitials = input;
-                   localStorage.setItem("birdlogInitials", input);
-                   document.getElementById("welcomeModal").style.display = "none";
-                 } else {
-                   alert("Please enter your name or initials.")
-                 }
-               }
-             }
+        const saved = localStorage.getItem("birdlogInitials");
+        if (saved) {
+          currentUserInitials = saved;
+          document.getElementById("welcomeModal").style.display = "none";
+        } else {// Force modal to show
+        document.getElementById("welcomeModal").style.display = "block";
+      }
+      
+      document.querySelector(".close-button").onclick = () => {
+        document.getElementById("welcomeModal").style.display = "none";
+      };
+      
+      document.getElementById("submitInitials").onclick = () => {
+        const input = document.getElementById("usersInitialsInput").value.trim();
+        if (input) {
+          currentUserInitials = input;
+          localStorage.setItem("birdlogInitials", input);
+          document.getElementById("welcomeModal").style.display = "none";
+        } else {
+          alert("Please enter your name or initials.")
+        }
+      }};
+
+
          require([ "esri/config","esri/Map",
           "esri/views/MapView", 
           "esri/widgets/Locate",
