@@ -125,172 +125,29 @@ input:checked + .slider:before {
    <!-- importing the css and libares from esri.js-->
    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
    <script src="https://js.arcgis.com/4.29/"></script>
-
    <!-- loading the modules-->
-   <script>
-     let currentUserInitials = "";
-     window.onload = function() {
-              const saved = localStorage.getItem("birdlogInitials");
-              if (saved) {
-                currentUserInitials = saved;
-                document.getElementById("welcomeModal").style.display = "none";
-              }
-              document.querySelector(".close-button").onclick = () => {
-                document.getElementById("welcomeModal").style.display = "none";
-              };
-
-              document.getElementById("submitInitials").onclick = () => {
-                const input = document.getElementById("usersInitialsInput").value.trim();
-                if (input) {
-                  currentUserInitials = input;
-                  localStorage.setItem("birdlogInitials", input);
-                  document.getElementById("welcomeModal").style.display = "none";
-                } else {
-                  alert("Please enter your name or initials.")
-                }
-              }
-            }
-        require([ "esri/config","esri/Map",
-         "esri/views/MapView", 
-         "esri/widgets/Locate",
-         "esri/widgets/Search",
-         "esri/widgets/Legend",
-         "esri/widgets/Expand",
-         "esri/layers/FeatureLayer"
-        ], 
-         (esriConfig, Map, MapView, Locate, Search, Legend, Expand, FeatureLayer) => {
-
-            //adding in API key
-            esriConfig.apiKey= "AAPTxy8BH1VEsoebNVZXo8HurKfn8xs-sWsNswOMg-gicKExeOv8LqtW2-eXX8sChmQJp4x3jD2uBPHxjWmO3fI1MQBAVeBl6VrxvF186jjKmG_LWli4wZNwXUZORO17pGQ432BSycHoLd6yAMjl44SbH5qtpRSMS43nREA6-DFo9dMyy_DzxHf3sYdLtbNhLdppCmVwp9UZIU1M_c0_DFpQAWFVK3KWA6Z97IAm1mgtQ6S5dAkxc9iP5a1tZBiZY7vbAT1_gRtlmFxO";
-
-            const map = new Map ({
-                basemap: "satellite"
-            });
-
-            const view = new MapView ({
-                container: "viewDiv", //refrece to the DOM node that will contain the view
-                map: map,
-                zoom: 13
-            });
-
-            // location widget
-            const locateBtn =  new Locate ({
-                view : view,
-                useHeadingEnabled: false,
-                goToOverride: function(view, options){
-                    options.target.scale = 2500;
-                    return view.goTo(options.target)
-                }
-            });
-
-        // add the locate widget to the left corner of view
-            view.ui.add(locateBtn, {
-                position: "top-left"
-                });
-            
-            // add a search widget 
-            const searchWidget = new Search ({
-                view : view
-            });
-
-        // add the search widget to the bottom of the view
-            view.ui.add(searchWidget,{
-                position: "bottom-right"
-            });
-
-            //add legend widget
-            const legend = new Legend ({
-                view : view
-            });
-
-
-             const legendExpand = new Expand ({
-                view:view,
-                content: legend,
-                //expanded: False, // start collapsed
-                expandTooltip: "Show Legend"
-             });
-
-             view.ui.add(legendExpand,{
-                position: "bottom-left"
-             }
-             )
-             // opens where the user is
-            view.when(()=>{
-                locateBtn.locate().catch((err)=>{
-                    console.warn("Couldn't Locate user", err)
-                });
-            });
-
-            //create featurelayer from feature service
-            const layer = new FeatureLayer ({ 
-                // adding url 
-                url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_a3cf695961784f9aa1fd751fb62e48d5_results/FeatureServer",
-                outFields: ["*"],
-                popupTemplate: {
-                    title: "Bird Sighting: {what_bird_did_you_see}",
-                    content: `
-                    <strong>Species:</strong> {what_bird_did_you_see}<br>
-                    <strong>Number Observed:</strong> {how_many_did_you_see}<br>
-                    <strong>Habitat Type:</strong> {what_kind_of_habitat_was_it_in}<br>
-                    <strong>Other Habitat Notes:</strong> {other___what_kind_of_habitat_was_it_in}<br>
-                    <strong>Observer:</strong> {whats_your_name_or_initials}<br>
-                    <strong>Date & Time:</strong> {when_did_you_see_it}<br>
-                    `
-                }
-            });
-
-            //add the layer to map
-            map.add(layer);
-
-            const birdLayer = new FeatureLayer ({
-                url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Important_Bird_Areas_leah/FeatureServer"
-            });
-
-            map.add(birdLayer);
-
-            // layer to toggle on layers
-            const layerToggleExpand = new Expand ({
-                view: view,
-                content: document.getElementById("layerToggleContent"),
-                expandTooltip: "Toggle Layers",
-                icon: "layers"
-            });
-
-            view.ui.add(layerToggleExpand, "top-left");
-
-            //checkbox
-            document.getElementById("sightingsToggle").addEventListener("change", function(e) {
-                layer.visible = e.target.checked;
-            });
-            
-            document.getElementById("ibaToggle").addEventListener("change", function(e) {
-                birdLayer.visible = e.target.checked;
-            });
-
-            document.getElementById("userOnlyToggle"). addEventListener("change", function(e) {
-              if (e.target.checked && currentUserInitials) {
-                layer.definitionExpression = `whats_your_name_or_initials = "${currentUserInitials}"`;
-              } else {
-                layer.definitionExpression = "";
-              }
-            });
-
-            view.when(()=>{
-              locateBtn.locate().catch((err) =>{
-                console.warn("Couldn't Locate user", err);
-              });
-            });
-
-        });
-    </script>
-
+   
   </head>
+
+
   <body>
     <!-- adds the 'add record button and takes user to the survey'-->
      <a href="https://arcg.is/00Hnm10"target="_blank" class="addRecordBtn">Log</a>
 
     <div id="viewDiv"></div>
+
+    <!-- Welcome Popup Modal -->
+    <div id="welcomeModal" class="modal">
+      <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h2>Welcome to Bird Log!</h2>
+          <p>Track your bird sightings and explore what others have seen in your area.</p>
+          <p>Enter your name or initials to personalize your sightings;</p>
+          <input type="text" id="usersInitialsInput" placeholder="Your initials or Name" style="width: 80%;">
+          <br><br>
+          <button id="submitInitials" style="padding: 8px 16px;">Continue</button>
+      </div>
+  </div> 
 
        <!-- Hidden container for layer toggles (to be used inside Expand) -->
        <div id="layerToggleContent" style="font-family: Arial;">
@@ -308,20 +165,174 @@ input:checked + .slider:before {
             <span class="slider"></span>
           </label>
         </div>
-      </div>
-  
-    <!-- Welcome Popup Modal -->
-    <div id="welcomeModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>Welcome to Bird Log!</h2>
-            <p>Track your bird sightings and explore what others have seen in your area.</p>
-            <p>Enter your name or initials to personalize your sightings;</p>
-            <input type="text" id="usersInitialsInput" placeholder="Your initials or Name" style="width: 80%;">
-            <br><br>
-            <button id="submitInitials" style="padding: 8px 16px;">Continue</button>
+        <div style="margin-top: 12px;">
+          Show Only My Sightings
+          <label class="switch">
+            <input type="checkbox" id="userOnlyToggle">
+            <span class="slider"></span>
+          </label>
         </div>
+      </div>
     </div> 
+    <script>
+
+      let currentUserInitials = "";
+      window.onload = function() {
+               const saved = localStorage.getItem("birdlogInitials");
+               if (saved) {
+                 currentUserInitials = saved;
+                 document.getElementById("welcomeModal").style.display = "none";
+               }
+               document.querySelector(".close-button").onclick = () => {
+                 document.getElementById("welcomeModal").style.display = "none";
+               };
+ 
+               document.getElementById("submitInitials").onclick = () => {
+                 const input = document.getElementById("usersInitialsInput").value.trim();
+                 if (input) {
+                   currentUserInitials = input;
+                   localStorage.setItem("birdlogInitials", input);
+                   document.getElementById("welcomeModal").style.display = "none";
+                 } else {
+                   alert("Please enter your name or initials.")
+                 }
+               }
+             }
+         require([ "esri/config","esri/Map",
+          "esri/views/MapView", 
+          "esri/widgets/Locate",
+          "esri/widgets/Search",
+          "esri/widgets/Legend",
+          "esri/widgets/Expand",
+          "esri/layers/FeatureLayer"
+         ], 
+          (esriConfig, Map, MapView, Locate, Search, Legend, Expand, FeatureLayer) => {
+ 
+             //adding in API key
+             esriConfig.apiKey= "AAPTxy8BH1VEsoebNVZXo8HurKfn8xs-sWsNswOMg-gicKExeOv8LqtW2-eXX8sChmQJp4x3jD2uBPHxjWmO3fI1MQBAVeBl6VrxvF186jjKmG_LWli4wZNwXUZORO17pGQ432BSycHoLd6yAMjl44SbH5qtpRSMS43nREA6-DFo9dMyy_DzxHf3sYdLtbNhLdppCmVwp9UZIU1M_c0_DFpQAWFVK3KWA6Z97IAm1mgtQ6S5dAkxc9iP5a1tZBiZY7vbAT1_gRtlmFxO";
+ 
+             const map = new Map ({
+                 basemap: "satellite"
+             });
+ 
+             const view = new MapView ({
+                 container: "viewDiv", //refrece to the DOM node that will contain the view
+                 map: map,
+                 zoom: 13
+             });
+ 
+             // location widget
+             const locateBtn =  new Locate ({
+                 view : view,
+                 useHeadingEnabled: false,
+                 goToOverride: function(view, options){
+                     options.target.scale = 2500;
+                     return view.goTo(options.target)
+                 }
+             });
+ 
+         // add the locate widget to the left corner of view
+             view.ui.add(locateBtn, {
+                 position: "top-left"
+                 });
+             
+             // add a search widget 
+             const searchWidget = new Search ({
+                 view : view
+             });
+ 
+         // add the search widget to the bottom of the view
+             view.ui.add(searchWidget,{
+                 position: "bottom-right"
+             });
+ 
+             //add legend widget
+             const legend = new Legend ({
+                 view : view
+             });
+ 
+ 
+              const legendExpand = new Expand ({
+                 view:view,
+                 content: legend,
+                 //expanded: False, // start collapsed
+                 expandTooltip: "Show Legend"
+              });
+ 
+              view.ui.add(legendExpand,{
+                 position: "bottom-left"
+              }
+              )
+              // opens where the user is
+             view.when(()=>{
+                 locateBtn.locate().catch((err)=>{
+                     console.warn("Couldn't Locate user", err)
+                 });
+             });
+ 
+             //create featurelayer from feature service
+             const layer = new FeatureLayer ({ 
+                 // adding url 
+                 url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_a3cf695961784f9aa1fd751fb62e48d5_results/FeatureServer",
+                 outFields: ["*"],
+                 popupTemplate: {
+                     title: "Bird Sighting: {what_bird_did_you_see}",
+                     content: `
+                     <strong>Species:</strong> {what_bird_did_you_see}<br>
+                     <strong>Number Observed:</strong> {how_many_did_you_see}<br>
+                     <strong>Habitat Type:</strong> {what_kind_of_habitat_was_it_in}<br>
+                     <strong>Other Habitat Notes:</strong> {other___what_kind_of_habitat_was_it_in}<br>
+                     <strong>Observer:</strong> {whats_your_name_or_initials}<br>
+                     <strong>Date & Time:</strong> {when_did_you_see_it}<br>
+                     `
+                 }
+             });
+ 
+             //add the layer to map
+             map.add(layer);
+ 
+             const birdLayer = new FeatureLayer ({
+                 url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Important_Bird_Areas_leah/FeatureServer"
+             });
+ 
+             map.add(birdLayer);
+ 
+             // layer to toggle on layers
+             const layerToggleExpand = new Expand ({
+                 view: view,
+                 content: document.getElementById("layerToggleContent"),
+                 expandTooltip: "Toggle Layers",
+                 icon: "layers"
+             });
+ 
+             view.ui.add(layerToggleExpand, "top-left");
+ 
+             //checkbox
+             document.getElementById("sightingsToggle").addEventListener("change", function(e) {
+                 layer.visible = e.target.checked;
+             });
+             
+             document.getElementById("ibaToggle").addEventListener("change", function(e) {
+                 birdLayer.visible = e.target.checked;
+             });
+ 
+             document.getElementById("userOnlyToggle"). addEventListener("change", function(e) {
+               if (e.target.checked && currentUserInitials) {
+                 layer.definitionExpression = `whats_your_name_or_initials = "${currentUserInitials}"`;
+               } else {
+                 layer.definitionExpression = "";
+               }
+             });
+ 
+             view.when(()=>{
+               locateBtn.locate().catch((err) =>{
+                 console.warn("Couldn't Locate user", err);
+               });
+             });
+ 
+         });
+     </script>
+ 
   </body>
 </html>
 
