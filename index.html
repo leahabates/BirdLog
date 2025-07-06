@@ -37,7 +37,7 @@
 }
 
     .modal {
-        display: block; 
+        display: none; 
         position: fixed;
         z-index: 9999;
         left: 0;
@@ -219,7 +219,8 @@ input:checked + .slider:before {
              const view = new MapView ({
                  container: "viewDiv", //refrece to the DOM node that will contain the view
                  map: map,
-                 zoom: 13
+                 zoom: 13,
+                 center: [-89.4, 43.07]
              });
  
              // location widget
@@ -279,6 +280,7 @@ input:checked + .slider:before {
                  // adding url 
                  url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_a3cf695961784f9aa1fd751fb62e48d5_results/FeatureServer",
                  outFields: ["*"],
+                 title: "Bird Sightings (User Submitted)",
                  renderer: {
                   type: "simple", // Required for autocasting!
                   symbol: {
@@ -311,6 +313,18 @@ input:checked + .slider:before {
              //add important bird layers
              const birdLayer = new FeatureLayer ({
                  url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Important_Bird_Areas_leah/FeatureServer",
+                 title: "Critical Bird Habitats",
+                 renderer: {
+                  type: "simple",
+                  symbol: {
+                    type: "simple-fill",
+                    color: [0, 153, 255, 0.2],
+                    outline: {
+                      color: [0, 153, 255, 1],
+                      width: 1
+                    }
+                  }
+                },
                  popupTemplate: {
                   title: "Critical Bird Habitat",
                   content:`

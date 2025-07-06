@@ -146,6 +146,9 @@
         const layer = new FeatureLayer({
           url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_a3cf695961784f9aa1fd751fb62e48d5_results/FeatureServer",
           outFields: ["*"],
+          label: "Bird Sighting", // label for legend symbol
+          legendOptions: {
+             title: "Bird Sightings (User Reports)"},
           popupTemplate: {
             title: "Bird Sighting: {what_bird_did_you_see}",
             content: `
