@@ -270,12 +270,28 @@ input:checked + .slider:before {
                      console.warn("Couldn't Locate user", err)
                  });
              });
+
+             const svgPath = "M456 0c-48.6 0-88 39.4-88 88l0 29.2L12.5 390.6c-14 10.8-16.6 30.9-5.9 44.9s30.9 16.6 44.9 5.9L126.1 384l133.1 0 46.6 113.1c5 12.3 19.1 18.1 31.3 13.1s18.1-19.1 13.1-31.3L311.1 384l40.9 0c1.1 0 2.1 0 3.2 0l46.6 113.2c5 12.3 19.1 18.1 31.3 13.1s18.1-19.1 13.1-31.3l-42-102C484.9 354.1 544 280 544 192l0-64 0-8 80.5-20.1c8.6-2.1 13.8-10.8 11.6-19.4C629 52 603.4 32 574 32l-50.1 0C507.7 12.5 483.3 0 456 0zm0 64a24 24 0 1 1 0 48 24 24 0 1 1 0-48z";
+
  
              //create featurelayer from feature service
              const layer = new FeatureLayer ({ 
                  // adding url 
                  url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_a3cf695961784f9aa1fd751fb62e48d5_results/FeatureServer",
                  outFields: ["*"],
+                 renderer: {
+                  type: "simple", // Required for autocasting!
+                  symbol: {
+                    type: "simple-marker",
+                    style: "path",
+                    path: svgPath,
+                    color: "#FFED29",
+                    size: 20,
+                    outline: {
+                      color: "#000",
+                      width: 1}
+                    }
+                  },
                  popupTemplate: {
                      title: "Bird Sighting: {what_bird_did_you_see}",
                      content: `
@@ -294,7 +310,12 @@ input:checked + .slider:before {
 
              //add important bird layers
              const birdLayer = new FeatureLayer ({
-                 url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Important_Bird_Areas_leah/FeatureServer"
+                 url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Important_Bird_Areas_leah/FeatureServer",
+                 popupTemplate: {
+                  title: "Critical Bird Habitat",
+                  content:`
+                  <strong>Name:</strong> {IBA_NAME}`
+                 }
              });
  
              map.add(birdLayer);
