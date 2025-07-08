@@ -1,197 +1,203 @@
 <!DOCTYPE html>
- <html>
-  <head>
+<html>
 
-    <!-- meta for the browswer to allow for mobile first design-->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+<head>
 
-   <title>Bird Log</title>
+  <!-- meta for the browswer to allow for mobile first design-->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-   <style>
+  <title>Bird Log</title>
+
+  <style>
     html,
     body,
     #viewDiv {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
     }
 
     .addRecordBtn {
-        position: absolute;
-        z-index: 10;
-        top: 10px;
-        right: 10px;
-        background-color: #ffffff;
-        color: rgb(62, 61, 61);
-        padding: 8px 16px;
-        border: none;
-        font-size: 14px;
-        cursor: pointer;
-        text-decoration: none;
-}
+      position: absolute;
+      z-index: 10;
+      top: 10px;
+      right: 10px;
+      background-color: #ffffff;
+      color: rgb(62, 61, 61);
+      padding: 8px 16px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
 
     .addRecordBtn:hover {
-        background-color: #ffffff;
-}
+      background-color: #ffffff;
+    }
 
     .modal {
-        display: block; 
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0,0,0,0.5);
-        font-family: Arial, sans-serif;
-}
+      display: block;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      font-family: Arial, sans-serif;
+    }
 
     .modal-content {
-        background-color: #fff;
-        margin: 20% auto;
-        padding: 20px;
-        border-radius: 12px;
-        width: 80%;
-        max-width: 400px;
-        text-align: center;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-}
+      background-color: #fff;
+      margin: 20% auto;
+      padding: 20px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
 
     .close-button {
-        color: #aaa;
-        float: right;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-}
+      color: #aaa;
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     .close-button:hover {
-        color: #000;
-}
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 24px;
-  margin-left: 8px;
-}
+      color: #000;
+    }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+      margin-left: 8px;
+    }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 24px;
-}
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
 
-input:checked + .slider {
-  background-color: #4caf50;
-}
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
 
-input:checked + .slider:before {
-  transform: translateX(24px);
-}
+    input:checked+.slider {
+      background-color: #4caf50;
+    }
 
-.esri-expand__content {
-  background: rgb(251, 251, 251) !important;
-  border-radius: 0px !important;
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0);
-  max-width: 3000px;
-}
+    input:checked+.slider:before {
+      transform: translateX(24px);
+    }
+
+    .esri-expand__content {
+      background: rgb(251, 251, 251) !important;
+      border-radius: 0px !important;
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0);
+      max-width: 3000px;
+    }
   </style>
-   
-
-   <!-- importing the css and libares from esri.js-->
-   <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
-   <script src="https://js.arcgis.com/4.29/"></script>
-   <!-- loading the modules-->
-   
-  </head>
 
 
-  <body>
-    <!-- adds the 'add record button and takes user to the survey'-->
-     <a href="https://arcg.is/00Hnm10"target="_blank" class="addRecordBtn">Log</a>
+  <!-- importing the css and libares from esri.js-->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.29/"></script>
+  <!-- loading the modules-->
 
-    <div id="viewDiv"></div>
+</head>
 
-    <!-- Welcome Popup Modal -->
-    <div id="welcomeModal" class="modal">
-      <div class="modal-content">
-          <span class="close-button">&times;</span>
-          <h2>Welcome to Bird Log!</h2>
-          <p>Track your bird sightings and explore what others have seen in your area.</p>
-          <p>Enter your name or initials to personalize your sightings;</p>
-          <input type="text" id="usersInitialsInput" placeholder="Your initials or Name" style="width: 80%;">
-          <br><br>
-          <button id="submitInitials" style="padding: 8px 16px;">Continue</button>
-      </div>
-  </div> 
 
-       <!-- Hidden container for layer toggles (to be used inside Expand) -->
-       <div id="layerToggleContent" style="font-family: Arial;">
-        <div style="margin-bottom: 12px;">
-          Show Bird Sightings
-          <label class="switch">
-            <input type="checkbox" id="sightingsToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div>
-          Show Important Bird Areas
-          <label class="switch">
-            <input type="checkbox" id="ibaToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div style="margin-top: 12px;">
-          Show Only My Sightings
-          <label class="switch">
-            <input type="checkbox" id="userOnlyToggle">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-    </div> 
+<body>
+  <!-- adds the 'add record button and takes user to the survey'-->
+  <a href="https://arcg.is/00Hnm10" target="_blank" class="addRecordBtn">Log</a>
 
-    <script>
-     // global variable for user to add initials
-      let currentUserInitials = "";
-     // prompts user for initials to be used later for filtering users own sightings
-      window.onload = function() {
-        const saved = localStorage.getItem("birdlogInitials");
-        if (saved) {
-          currentUserInitials = saved;
-          document.getElementById("welcomeModal").style.display = "none";
-        } else {// Force modal to show
+  <div id="viewDiv"></div>
+
+  <!-- Welcome Popup Modal -->
+  <div id="welcomeModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Welcome to Bird Log!</h2>
+      <p>Track your bird sightings and explore what others have seen in your area.</p>
+      <p>Enter your name or initials to personalize your sightings;</p>
+      <input type="text" id="usersInitialsInput" placeholder="Your initials or Name" style="width: 80%;">
+      <br><br>
+      <button id="submitInitials" style="padding: 8px 16px;">Continue</button>
+    </div>
+  </div>
+
+  <!-- Hidden container for layer toggles (to be used inside Expand) -->
+  <div id="layerToggleContent" style="font-family: Arial;">
+    <div style="margin-bottom: 12px;">
+      Show Bird Sightings
+      <label class="switch">
+        <input type="checkbox" id="sightingsToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div>
+      Show Important Bird Areas
+      <label class="switch">
+        <input type="checkbox" id="ibaToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div style="margin-top: 12px;">
+      Show Only My Sightings
+      <label class="switch">
+        <input type="checkbox" id="userOnlyToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    // global variable for user to add initials
+    let currentUserInitials = "";
+    // prompts user for initials to be used later for filtering users own sightings
+    window.onload = function () {
+      const saved = localStorage.getItem("birdlogInitials");
+      if (saved) {
+        currentUserInitials = saved;
+        document.getElementById("welcomeModal").style.display = "none";
+      } else {// Force modal to show
         document.getElementById("welcomeModal").style.display = "block";
       }
-      
+
       document.querySelector(".close-button").onclick = () => {
         document.getElementById("welcomeModal").style.display = "none";
       };
-      
+
       document.getElementById("submitInitials").onclick = () => {
         const input = document.getElementById("usersInitialsInput").value.trim();
         if (input) {
@@ -201,182 +207,196 @@ input:checked + .slider:before {
         } else {
           alert("Please enter your name or initials.")
         }
-      }};
+      }
+    };
 
 
-         require([ "esri/config","esri/Map",
-          "esri/views/MapView", 
-          "esri/widgets/Locate",
-          "esri/widgets/Search",
-          "esri/widgets/Legend",
-          "esri/widgets/Expand",
-          "esri/layers/FeatureLayer"
-         ], 
-          (esriConfig, Map, MapView, Locate, Search, Legend, Expand, FeatureLayer) => {
- 
-             //adding in API key
-             esriConfig.apiKey= "AAPTxy8BH1VEsoebNVZXo8HurKfn8xs-sWsNswOMg-gicKExeOv8LqtW2-eXX8sChmQJp4x3jD2uBPHxjWmO3fI1MQBAVeBl6VrxvF186jjKmG_LWli4wZNwXUZORO17pGQ432BSycHoLd6yAMjl44SbH5qtpRSMS43nREA6-DFo9dMyy_DzxHf3sYdLtbNhLdppCmVwp9UZIU1M_c0_DFpQAWFVK3KWA6Z97IAm1mgtQ6S5dAkxc9iP5a1tZBiZY7vbAT1_gRtlmFxO";
- 
-             const map = new Map ({
-                 basemap: "satellite"
-             });
- 
-             const view = new MapView ({
-                 container: "viewDiv", //refrece to the DOM node that will contain the view
-                 map: map,
-                 zoom: 13,
-                 center: [-89.4, 43.07]
-             });
- 
-             // location widget
-             const locateBtn =  new Locate ({
-                 view : view,
-                 useHeadingEnabled: false,
-                 goToOverride: function(view, options){
-                     options.target.scale = 2500;
-                     return view.goTo(options.target)
-                 }
-             });
- 
-         // add the locate widget to the left corner of view
-             view.ui.add(locateBtn, {
-                 position: "top-left"
-                 });
-             
-             // add a search widget 
-             const searchWidget = new Search ({
-                 view : view
-             });
- 
-         // add the search widget to the bottom of the view
-             view.ui.add(searchWidget,{
-                 position: "bottom-right"
-             });
- 
-             //add legend widget
-             const legend = new Legend ({
-                 view : view
-             });
- 
-           // makes the legend into a smaller icon that can be expanded
-              const legendExpand = new Expand ({
-                 view:view,
-                 content: legend,
-                 //expanded: False, // start collapsed
-                 expandTooltip: "Show Legend"
-              });
- 
-              view.ui.add(legendExpand,{
-                 position: "bottom-left"
+    require(["esri/config", "esri/Map",
+      "esri/views/MapView",
+      "esri/widgets/Locate",
+      "esri/widgets/Search",
+      "esri/widgets/Legend",
+      "esri/widgets/Expand",
+      "esri/layers/FeatureLayer"
+    ],
+      (esriConfig, Map, MapView, Locate, Search, Legend, Expand, FeatureLayer) => {
+
+        //adding in API key
+        esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurKfn8xs-sWsNswOMg-gicKExeOv8LqtW2-eXX8sChmQJp4x3jD2uBPHxjWmO3fI1MQBAVeBl6VrxvF186jjKmG_LWli4wZNwXUZORO17pGQ432BSycHoLd6yAMjl44SbH5qtpRSMS43nREA6-DFo9dMyy_DzxHf3sYdLtbNhLdppCmVwp9UZIU1M_c0_DFpQAWFVK3KWA6Z97IAm1mgtQ6S5dAkxc9iP5a1tZBiZY7vbAT1_gRtlmFxO";
+
+        const map = new Map({
+          basemap: "satellite"
+        });
+
+        const view = new MapView({
+          container: "viewDiv", //refrece to the DOM node that will contain the view
+          map: map,
+          zoom: 13,
+          center: [-89.4, 43.07]
+        });
+
+        // location widget
+        const locateBtn = new Locate({
+          view: view,
+          useHeadingEnabled: false,
+          goToOverride: function (view, options) {
+            options.target.scale = 2500;
+            return view.goTo(options.target)
+          }
+        });
+
+        // add the locate widget to the left corner of view
+        view.ui.add(locateBtn, {
+          position: "top-left"
+        });
+
+        // add a search widget 
+        const searchWidget = new Search({
+          view: view
+        });
+
+        // add the search widget to the bottom of the view
+        view.ui.add(searchWidget, {
+          position: "bottom-right"
+        });
+
+        //add legend widget
+        const legend = new Legend({
+          view: view
+        });
+
+        // makes the legend into a smaller icon that can be expanded
+        const legendExpand = new Expand({
+          view: view,
+          content: legend,
+          //expanded: False, // start collapsed
+          expandTooltip: "Show Legend"
+        });
+
+        view.ui.add(legendExpand, {
+          position: "bottom-left"
+        }
+        )
+        // opens where the user is
+        view.when(() => {
+          locateBtn.locate().catch((err) => {
+            console.warn("Couldn't Locate user", err)
+          });
+        });
+
+        // SVG varible used for a unique icon for sightings markers
+        const svgPath = "M456 0c-48.6 0-88 39.4-88 88l0 29.2L12.5 390.6c-14 10.8-16.6 30.9-5.9 44.9s30.9 16.6 44.9 5.9L126.1 384l133.1 0 46.6 113.1c5 12.3 19.1 18.1 31.3 13.1s18.1-19.1 13.1-31.3L311.1 384l40.9 0c1.1 0 2.1 0 3.2 0l46.6 113.2c5 12.3 19.1 18.1 31.3 13.1s18.1-19.1 13.1-31.3l-42-102C484.9 354.1 544 280 544 192l0-64 0-8 80.5-20.1c8.6-2.1 13.8-10.8 11.6-19.4C629 52 603.4 32 574 32l-50.1 0C507.7 12.5 483.3 0 456 0zm0 64a24 24 0 1 1 0 48 24 24 0 1 1 0-48z";
+
+
+        //create featurelayer from feature service
+        const layer = new FeatureLayer({
+          // adding url 
+          url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_a3cf695961784f9aa1fd751fb62e48d5_results/FeatureServer",
+          outFields: ["*"],
+          title: "Bird Sightings (User Submitted)",
+          renderer: {
+            type: "simple", // Required for autocasting!
+            symbol: {
+              type: "simple-marker",
+              style: "path",
+              path: svgPath,
+              color: "#FFED29",
+              size: 20,
+              outline: {
+                color: "#000",
+                width: 1
               }
-              )
-              // opens where the user is
-             view.when(()=>{
-                 locateBtn.locate().catch((err)=>{
-                     console.warn("Couldn't Locate user", err)
-                 });
-             });
+            }
+          },
+          // Original Template
+          popupTemplate: {
+            title: "Bird Sighting: {what_bird_did_you_see}",
+            content: [
+              {
+                type: "text",
+                text: `
+                  <strong>Species:</strong> {what_bird_did_you_see}<br>
+                  <strong>Number Observed:</strong> {how_many_did_you_see}<br>
+                  <strong>Habitat Type:</strong> {what_kind_of_habitat_was_it_in}<br>
+                  <strong>Other Habitat Notes:</strong> {other___what_kind_of_habitat_was_it_in}<br>
+                  <strong>Observer:</strong> {whats_your_name_or_initials}<br>
+                  <strong>Date & Time:</strong> {when_did_you_see_it}<br>
+                `
+              },
+              {
+                // Add photo's here
+                type: "attachments",
+                displayType: "auto",
+                caption: "Photos from your survey"
+              }
+            ]
+          }
+        });
 
-           // SVG varible used for a unique icon for sightings markers
-             const svgPath = "M456 0c-48.6 0-88 39.4-88 88l0 29.2L12.5 390.6c-14 10.8-16.6 30.9-5.9 44.9s30.9 16.6 44.9 5.9L126.1 384l133.1 0 46.6 113.1c5 12.3 19.1 18.1 31.3 13.1s18.1-19.1 13.1-31.3L311.1 384l40.9 0c1.1 0 2.1 0 3.2 0l46.6 113.2c5 12.3 19.1 18.1 31.3 13.1s18.1-19.1 13.1-31.3l-42-102C484.9 354.1 544 280 544 192l0-64 0-8 80.5-20.1c8.6-2.1 13.8-10.8 11.6-19.4C629 52 603.4 32 574 32l-50.1 0C507.7 12.5 483.3 0 456 0zm0 64a24 24 0 1 1 0 48 24 24 0 1 1 0-48z";
+        //add the layer to map
+        map.add(layer);
 
- 
-             //create featurelayer from feature service
-             const layer = new FeatureLayer ({ 
-                 // adding url 
-                 url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_a3cf695961784f9aa1fd751fb62e48d5_results/FeatureServer",
-                 outFields: ["*"],
-                 title: "Bird Sightings (User Submitted)",
-                 renderer: {
-                  type: "simple", // Required for autocasting!
-                  symbol: {
-                    type: "simple-marker",
-                    style: "path",
-                    path: svgPath,
-                    color: "#FFED29",
-                    size: 20,
-                    outline: {
-                      color: "#000",
-                      width: 1}
-                    }
-                  },
-                 popupTemplate: {
-                     title: "Bird Sighting: {what_bird_did_you_see}",
-                     content: `
-                     <strong>Species:</strong> {what_bird_did_you_see}<br>
-                     <strong>Number Observed:</strong> {how_many_did_you_see}<br>
-                     <strong>Habitat Type:</strong> {what_kind_of_habitat_was_it_in}<br>
-                     <strong>Other Habitat Notes:</strong> {other___what_kind_of_habitat_was_it_in}<br>
-                     <strong>Observer:</strong> {whats_your_name_or_initials}<br>
-                     <strong>Date & Time:</strong> {when_did_you_see_it}<br>
-                     `
-                 }
-             });
- 
-             //add the layer to map
-             map.add(layer);
-
-             //add important bird layers
-             const birdLayer = new FeatureLayer ({
-                 url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Important_Bird_Areas_leah/FeatureServer",
-                 title: "Critical Bird Habitats",
-                 renderer: {
-                  type: "simple",
-                  symbol: {
-                    type: "simple-fill",
-                    color: [0, 153, 255, 0.2],
-                    outline: {
-                      color: [0, 153, 255, 1],
-                      width: 1
-                    }
-                  }
-                },
-                 popupTemplate: {
-                  title: "Critical Bird Habitat",
-                  content:`
+        //add important bird layers
+        const birdLayer = new FeatureLayer({
+          url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/Important_Bird_Areas_leah/FeatureServer",
+          title: "Critical Bird Habitats",
+          renderer: {
+            type: "simple",
+            symbol: {
+              type: "simple-fill",
+              color: [0, 153, 255, 0.2],
+              outline: {
+                color: [0, 153, 255, 1],
+                width: 1
+              }
+            }
+          },
+          popupTemplate: {
+            title: "Critical Bird Habitat",
+            content: `
                   <strong>Name:</strong> {IBA_NAME}`
-                 }
-             });
- 
-             map.add(birdLayer);
- 
-             // layer to toggle on layers
-             const layerToggleExpand = new Expand ({
-                 view: view,
-                 content: document.getElementById("layerToggleContent"),
-                 expandTooltip: "Toggle Layers",
-                 icon: "layers"
-             });
- 
-             view.ui.add(layerToggleExpand, "top-left");
+          }
+        });
 
-           // open where the user is located
-             view.when(()=>{
-               locateBtn.locate().catch((err) =>{
-                 console.warn("Couldn't Locate user", err);
-               });
-             });
+        map.add(birdLayer);
 
-              //toggle layers on and off
-              document.getElementById("sightingsToggle").addEventListener("change", function(e) {
-                 layer.visible = e.target.checked;
-             });
-             
-             document.getElementById("ibaToggle").addEventListener("change", function(e) {
-                 birdLayer.visible = e.target.checked;
-             });
- 
-             document.getElementById("userOnlyToggle"). addEventListener("change", function(e) {
-               if (e.target.checked && currentUserInitials) {
-                 layer.definitionExpression = `whats_your_name_or_initials = '${currentUserInitials}'`;
-               } else {
-                 layer.definitionExpression = "";
-               }
-             });
- 
-         });
-     </script>
- 
-  </body>
+        // layer to toggle on layers
+        const layerToggleExpand = new Expand({
+          view: view,
+          content: document.getElementById("layerToggleContent"),
+          expandTooltip: "Toggle Layers",
+          icon: "layers"
+        });
+
+        view.ui.add(layerToggleExpand, "top-left");
+
+        // open where the user is located
+        view.when(() => {
+          locateBtn.locate().catch((err) => {
+            console.warn("Couldn't Locate user", err);
+          });
+        });
+
+        //toggle layers on and off
+        document.getElementById("sightingsToggle").addEventListener("change", function (e) {
+          layer.visible = e.target.checked;
+        });
+
+        document.getElementById("ibaToggle").addEventListener("change", function (e) {
+          birdLayer.visible = e.target.checked;
+        });
+
+        document.getElementById("userOnlyToggle").addEventListener("change", function (e) {
+          if (e.target.checked && currentUserInitials) {
+            layer.definitionExpression = `whats_your_name_or_initials = '${currentUserInitials}'`;
+          } else {
+            layer.definitionExpression = "";
+          }
+        });
+
+      });
+  </script>
+
+</body>
+
 </html>
-
